@@ -3,8 +3,7 @@
 ####################
 FROM ubuntu:16.04
 
-MAINTAINER madslundt@live.dk <madslundt@live.dk>
-
+MAINTAINER barlockm@gmail.com <barlockm@gmail.com>
 
 ####################
 # INSTALLATIONS
@@ -13,8 +12,7 @@ RUN apt-get update && apt-get install -y \
     curl \
     fuse \
     unionfs-fuse \
-    bc \
-    unzip \
+    encfs \
     wget
 
 RUN apt-get update && apt-get install -y ca-certificates && update-ca-certificates && apt-get install -y openssl
@@ -26,6 +24,17 @@ RUN \
    echo "deb [ arch=amd64,arm64 ] http://repo.mongodb.org/apt/ubuntu xenial/mongodb-org/3.4 multiverse" | tee /etc/apt/sources.list.d/mongodb-org-3.4.list && \
    apt-get update && \
    apt-get install -y mongodb-org
+
+# Plexdrive 4
+
+ENV PLEXDRIVE_BIN="plexdrive-linux-amd64"
+ENV PLEXDRIVE_URL="https://github.com/dweidenfeld/plexdrive/releases/download/4.0.0/${PLEXDRIVE_BIN}"
+
+RUN \
+    wget "$PLEXDRIVE_URL" && \
+    chmod a+x "$PLEXDRIVE_BIN" && \
+    cp -rf "$PLEXDRIVE_BIN" "/usr/bin/plexdrive" && \
+    rm -rf "$PLEXDRIVE_BIN"
 
 # S6 overlay
 ENV S6_BEHAVIOUR_IF_STAGE2_FAILS=2
@@ -44,17 +53,8 @@ RUN \
 ####################
 # ENVIRONMENT VARIABLES
 ####################
-# Encryption
-ENV ENCRYPT_MEDIA "1"
 
 ENV READ_ONLY "1"
-
-# Rclone
-ENV BUFFER_SIZE "500M"
-ENV MAX_READ_AHEAD "30G"
-ENV CHECKERS "16"
-ENV RCLONE_CLOUD_ENDPOINT "gd-crypt:"
-ENV RCLONE_LOCAL_ENDPOINT "local-crypt:"
 
 # Plexdrive
 ENV CHUNK_SIZE "10M"
@@ -65,25 +65,13 @@ ENV MONGO_DATABASE "plexdrive"
 # Time format
 ENV DATE_FORMAT "+%F@%T"
 
-# Local files removal
-ENV REMOVE_LOCAL_FILES_BASED_ON "space"
-ENV REMOVE_LOCAL_FILES_WHEN_SPACE_EXCEEDS_GB "100"
-ENV FREEUP_ATLEAST_GB "80"
-ENV REMOVE_LOCAL_FILES_AFTER_DAYS "30"
-
-
-
 ####################
 # SCRIPTS
 ####################
 COPY setup/* /usr/bin/
 
-COPY install.sh /
-
 COPY scripts/* /usr/bin/
 
-RUN chmod a+x /install.sh
-RUN sh /install.sh
 RUN chmod a+x /usr/bin/*
 
 COPY root /
@@ -97,7 +85,7 @@ RUN groupmod -g 1000 users && \
 # VOLUMES
 ####################
 # Define mountable directories.
-VOLUME /data/db /config /cloud-encrypt /cloud-decrypt /local-decrypt /local-media /chunks /log
+VOLUME /data/db /config /cloud-encrypt /cloud-decrypt /local-union /local-media /chunks /log
 
 RUN chmod -R 777 /data
 RUN chmod -R 777 /log
@@ -106,7 +94,6 @@ RUN chmod -R 777 /log
 # WORKING DIRECTORY
 ####################
 WORKDIR /data
-
 
 ####################
 # ENTRYPOINT

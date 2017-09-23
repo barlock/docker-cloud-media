@@ -1,10 +1,6 @@
 #!/bin/bash
-. "/usr/bin/config"
 
 all_good=1
-
-check_rclone_cloud
-check_rclone_local
 
 if [ $(ps -ef | grep "mongod" | grep -v "grep" | wc -l) == "0" ]; then
     printf "\n\nMongoDB is not running\n\n"
@@ -22,8 +18,8 @@ if [ "$(printenv ENCRYPT_MEDIA)" != "0" ]; then
         exit 0
     fi
 
-    if [ $(ps -ef | grep "rclone" | grep -v "grep" | wc -l) == "0" ]; then
-        printf "\n\nRclone is not running\n\n"
+    if [ $(ps -ef | grep "encfs" | grep -v "grep" | wc -l) == "0" ]; then
+        printf "\n\nEncFs is not running\n\n"
         all_good=0
     fi
 fi

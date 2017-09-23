@@ -6,19 +6,14 @@
 ###############################################################################
 # shellcheck source=config
 
-. "/usr/bin/config"
+. "/usr/bin/variables"
 ###############################################################################
 # FUNCTIONS
 ###############################################################################
 mount_gdrive () {
-	cloud_dir="${cloud_encrypt_dir}"
-	if [ "$(printenv ENCRYPT_MEDIA)" -eq "0" ]; then
-		cloud_dir="${cloud_decrypt_dir}"
-	fi
-
 	# Make sure GD mountpoint exists.
-	if [ ! -d "${cloud_dir}" ]; then
-		mkdir -p "${cloud_dir}"
+	if [ ! -d "${cloud_encrypt_dir}" ]; then
+		mkdir -p "${cloud_encrypt_dir}"
 	fi
 
 	# Make sure Plexdrive temp folder exists.
@@ -28,16 +23,14 @@ mount_gdrive () {
 
 	# Mount GD if not already mounted.
 	if [ $(ps -ef | grep "plexdrive" | grep -v "grep" | wc -l) == "0" ]; then
-		echo "[ $(date $(printenv DATE_FORMAT)) ] Mounting Google Drive mountpoint: ${cloud_dir}"
-		plexdrive $mongo $plexdrive_options "${cloud_dir}" &
+		echo "[ $(date $(printenv DATE_FORMAT)) ] Mounting Google Drive mountpoint: ${cloud_encrypt_dir}"
+		plexdrive $mongo $plexdrive_options "${cloud_encrypt_dir}" &
 	else
-		echo "[ $(date $(printenv DATE_FORMAT)) ] Google Drive mountpoint: ${cloud_dir} already mounted."
+		echo "[ $(date $(printenv DATE_FORMAT)) ] Google Drive mountpoint: ${cloud_encrypt_dir} already mounted."
 	fi
 }
 
-mount_local_media () {
-	check_rclone_local
-
+mount_decrypt_gdrive () {
 	# Make sure decrypted GD directory exists.
 	if [ ! -d "${cloud_decrypt_dir}" ]; then
 		mkdir -p "${cloud_decrypt_dir}"
@@ -50,9 +43,9 @@ mount_local_media () {
 		sleep 30
 	done
 
-	if [ $(ps -ef | grep "rclone" | grep -v "grep" | wc -l) == "0" ]; then
+	if [ $(ps -ef | grep "encfs" | grep -v "grep" | wc -l) == "0" ]; then
 		echo "[ $(date $(printenv DATE_FORMAT)) ] Mounting decrypted Google Drive: ${cloud_decrypt_dir}"
-		rclone mount $rclone_mount_options "$@" "$(printenv RCLONE_LOCAL_ENDPOINT)" "${cloud_decrypt_dir}" &
+		ENCFS6_CONFIG=/config/encfs6.xml encfs --extpass="echo ${ENCFS_PASSWORD}" $encfs_mount_options "${cloud_encrypt_dir}" "${cloud_decrypt_dir}" &
 	else
 		echo "[ $(date $(printenv DATE_FORMAT)) ] Decrypted mountpoint: ${cloud_decrypt_dir} already mounted."
 	fi
@@ -60,12 +53,8 @@ mount_local_media () {
 
 mount_union () {
 	# Make sure combined plex media directory exists.
-	if [ ! -d "${local_media_dir}" ]; then
-		mkdir -p "${local_media_dir}"
-	fi
-
-	if [ ! -d "${local_decrypt_dir}" ]; then
-		mkdir -p "${local_decrypt_dir}"
+	if [ ! -d "${local_union_dir}" ]; then
+		mkdir -p "${local_union_dir}"
 	fi
 
 	sleep 5
@@ -78,12 +67,12 @@ mount_union () {
 
 	# Mount plex media directory if not already mounted.
 	if [ $(ps -ef | grep "unionfs" | grep -v "grep" | wc -l) == "0" ]; then
-		ufs_mounts="${local_decrypt_dir}=RW:${cloud_decrypt_dir}=RO"
+		ufs_mounts="${local_media_dir}=RW:${cloud_decrypt_dir}=RO"
 
-		echo "[ $(date $(printenv DATE_FORMAT)) ] Mounting union: ${local_media_dir}"
-		unionfs $ufs_options "${ufs_mounts}" "${local_media_dir}"
+		echo "[ $(date $(printenv DATE_FORMAT)) ] Mounting union: ${local_union_dir}"
+		unionfs $ufs_options "${ufs_mounts}" "${local_union_dir}"
 	else
-		echo "[ $(date $(printenv DATE_FORMAT)) ] Union mountpoint: ${local_media_dir} already mounted."
+		echo "[ $(date $(printenv DATE_FORMAT)) ] Union mountpoint: ${local_union_dir} already mounted."
 	fi
 }
 
@@ -93,9 +82,7 @@ if pidof -o %PPID -x "$(basename "$0")"; then
 	echo "[ $(date $(printenv DATE_FORMAT)) ] Mount already in progress. Aborting."
 else
 	mount_gdrive
-	if [ "$(printenv ENCRYPT_MEDIA)" != "0" ]; then
-		mount_local_media
-	fi
+    mount_decrypt_gdrive
 	mount_union
 fi
 

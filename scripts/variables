@@ -6,21 +6,18 @@ _pgid=$(printenv PGID)
 cloud_encrypt_dir="/cloud-encrypt"
 cloud_decrypt_dir="/cloud-decrypt"
 
-local_decrypt_dir="/local-decrypt"
 local_media_dir="/local-media"
+local_union_dir="/local-union"
 
-rclone_config="--config=/config/rclone.conf"
-rclone_options="${rclone_config} --buffer-size $(printenv BUFFER_SIZE) --checkers $(printenv CHECKERS)"
-rclone_mount_options="${rclone_options} --allow-non-empty --allow-other --max-read-ahead $(printenv MAX_READ_AHEAD) --uid ${_puid:-911} --gid ${_pgid:-911}"
+encfs_mount_options="-o allow_other,nonempty"
 
 plexdrive_temp_dir="/chunks"
-plexdrive_options="--config=/config --temp=${plexdrive_temp_dir} --chunk-size=$(printenv CHUNK_SIZE) --clear-chunk-age=$(printenv CLEAR_CHUNK_AGE) --uid=${_puid:-911} --gid=${_pgid:-911} -o allow_other"
+plexdrive_options="--config=/config --temp=${plexdrive_temp_dir} --chunk-size=$(printenv CHUNK_SIZE) --clear-chunk-age=$(printenv CLEAR_CHUNK_AGE) --uid=${_puid:-911} --gid=${_pgid:-911} -o allow_other --root-node-id=${ROOT_NODE_ID}"
 if [ ! -z $(printenv CLEAR_CHUNK_MAX_SIZE) ]; then
     plexdrive_options="${plexdrive_options} --clear-chunk-max-size=$(printenv CLEAR_CHUNK_MAX_SIZE)"
 fi
 
 if [ "$(printenv READ_ONLY)" != "0" ]; then
-    rclone_mount_options="${rclone_mount_options} --read-only"
     plexdrive_options="${plexdrive_options} -o read_only"
 fi
 
