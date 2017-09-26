@@ -28,4 +28,5 @@ chown -R abc:abc \
     /usr/bin/* \
     $cloud_encrypt_dir \
     $cloud_decrypt_dir \
-    $local_union_dir
+    $local_union_dir \
+    $local_decrypt_dir

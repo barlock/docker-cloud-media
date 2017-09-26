@@ -7,6 +7,7 @@ cloud_encrypt_dir="/cloud-encrypt"
 cloud_decrypt_dir="/cloud-decrypt"
 
 local_media_dir="/local-media"
+local_encrypt_dir="/local-encrypt"
 local_union_dir="/local-union"
 
 encfs_mount_options="-o allow_other,nonempty"

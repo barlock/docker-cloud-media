@@ -43,11 +43,25 @@ mount_decrypt_gdrive () {
 		sleep 30
 	done
 
-	if [ $(ps -ef | grep "encfs" | grep -v "grep" | wc -l) == "0" ]; then
+	if [ $(ps -ef | grep "encfs --extpass=" | grep -v "grep" | wc -l) == "0" ]; then
 		echo "[ $(date $(printenv DATE_FORMAT)) ] Mounting decrypted Google Drive: ${cloud_decrypt_dir}"
 		ENCFS6_CONFIG=/config/encfs6.xml encfs --extpass="echo ${ENCFS_PASSWORD}" $encfs_mount_options "${cloud_encrypt_dir}" "${cloud_decrypt_dir}" &
 	else
 		echo "[ $(date $(printenv DATE_FORMAT)) ] Decrypted mountpoint: ${cloud_decrypt_dir} already mounted."
+	fi
+}
+
+mount_encrypt_local () {
+    # Make sure combined plex media directory exists.
+	if [ ! -d "${local_encrypt_dir}" ]; then
+		mkdir -p "${local_encrypt_dir}"
+	fi
+
+	if [ $(ps -ef | grep "encfs --reverse" | grep -v "grep" | wc -l) == "0" ]; then
+		echo "[ $(date $(printenv DATE_FORMAT)) ] Mounting encrypted local Drive: ${local_encrypt_dir}"
+		ENCFS6_config=/config/encfs6.xml encfs --reverse --extpass="echo ${ENCFS_PASSWORD}"  -o $encfs_mount_options "${local_media_dir}" "${local_encrypt_dir}" &
+	else
+		echo "[ $(date $(printenv DATE_FORMAT)) ] Encrypted mountpoint: ${local_encrypt_dir} already mounted."
 	fi
 }
 
@@ -81,6 +95,7 @@ mount_union () {
 if pidof -o %PPID -x "$(basename "$0")"; then
 	echo "[ $(date $(printenv DATE_FORMAT)) ] Mount already in progress. Aborting."
 else
+    mount_encrypt_local
 	mount_gdrive
     mount_decrypt_gdrive
 	mount_union
