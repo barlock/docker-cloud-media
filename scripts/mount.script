@@ -24,7 +24,7 @@ mount_gdrive () {
 	# Mount GD if not already mounted.
 	if [ $(ps -ef | grep "plexdrive" | grep -v "grep" | wc -l) == "0" ]; then
 		echo "[ $(date $(printenv DATE_FORMAT)) ] Mounting Google Drive mountpoint: ${cloud_encrypt_dir}"
-		plexdrive $mongo $plexdrive_options "${cloud_encrypt_dir}" &
+		plexdrive mount $plexdrive_options "${cloud_encrypt_dir}" &
 	else
 		echo "[ $(date $(printenv DATE_FORMAT)) ] Google Drive mountpoint: ${cloud_encrypt_dir} already mounted."
 	fi
@@ -52,6 +52,11 @@ mount_decrypt_gdrive () {
 }
 
 mount_encrypt_local () {
+    # Make sure combined plex media directory exists.
+	if [ ! -d "${local_media_dir}" ]; then
+		mkdir -p "${local_media_dir}"
+	fi
+
     # Make sure combined plex media directory exists.
 	if [ ! -d "${local_encrypt_dir}" ]; then
 		mkdir -p "${local_encrypt_dir}"
@@ -95,10 +100,10 @@ mount_union () {
 if pidof -o %PPID -x "$(basename "$0")"; then
 	echo "[ $(date $(printenv DATE_FORMAT)) ] Mount already in progress. Aborting."
 else
-    mount_encrypt_local
 	mount_gdrive
     mount_decrypt_gdrive
 	mount_union
+    mount_encrypt_local
 fi
 
 exit 0

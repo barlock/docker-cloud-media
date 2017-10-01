@@ -13,7 +13,7 @@ local_union_dir="/local-union"
 encfs_mount_options="-o allow_other,nonempty"
 
 plexdrive_temp_dir="/chunks"
-plexdrive_options="--config=/config --temp=${plexdrive_temp_dir} --chunk-size=$(printenv CHUNK_SIZE) --clear-chunk-age=$(printenv CLEAR_CHUNK_AGE) --uid=${_puid:-911} --gid=${_pgid:-911} -o allow_other --root-node-id=${ROOT_NODE_ID}"
+plexdrive_options="--config=/config --cache-file=${plexdrive_temp_dir}/cache.bolt --chunk-size=$(printenv CHUNK_SIZE) --uid=${_puid:-911} --gid=${_pgid:-911} -o allow_other --root-node-id=${ROOT_NODE_ID}"
 if [ ! -z $(printenv CLEAR_CHUNK_MAX_SIZE) ]; then
     plexdrive_options="${plexdrive_options} --clear-chunk-max-size=$(printenv CLEAR_CHUNK_MAX_SIZE)"
 fi
@@ -21,8 +21,6 @@ fi
 if [ "$(printenv READ_ONLY)" != "0" ]; then
     plexdrive_options="${plexdrive_options} -o read_only"
 fi
-
-mongo="--mongo-database=$(printenv MONGO_DATABASE) --mongo-host=localhost"
 
 ufs_options="-o uid=${_puid:-911} -o gid=${_pgid:-911} -o cow,allow_other,direct_io,nonempty,auto_cache,sync_read"
 
