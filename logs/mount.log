@@ -1,0 +1,75 @@
+[ 2017-10-01@20:06:48 ] Mounting encrypted local Drive: /local-encrypt
+Creating new encrypted volume.
+Please choose from one of the following options:
+ enter "x" for expert configuration mode,
+ enter "p" for pre-configured paranoia mode,
+ anything else, or an empty line will select standard mode.
+?> 
+Standard configuration selected.
+
+Configuration finished.  The filesystem to be created has
+the following properties:
+[ 2017-10-01@20:06:48 ] Mounting Google Drive mountpoint: /cloud-encrypt
+Waiting for mount /cloud-encrypt ...
+[ 2017-10-01@20:08:59 ] Mounting encrypted local Drive: /local-encrypt
+Creating new encrypted volume.
+Please choose from one of the following options:
+ enter "x" for expert configuration mode,
+ enter "p" for pre-configured paranoia mode,
+ anything else, or an empty line will select standard mode.
+?> 
+Standard configuration selected.
+
+Configuration finished.  The filesystem to be created has
+the following properties:
+[ 2017-10-01@20:09:00 ] Mounting Google Drive mountpoint: /cloud-encrypt
+[ 2017-10-01@20:09:05 ] Mounting decrypted Google Drive: /cloud-decrypt
+[ 2017-10-01@20:09:11 ] Mounting union: /local-union
+[ 2017-10-01@20:25:49 ] Mounting encrypted local Drive: /local-encrypt
+Creating new encrypted volume.
+Please choose from one of the following options:
+ enter "x" for expert configuration mode,
+ enter "p" for pre-configured paranoia mode,
+ anything else, or an empty line will select standard mode.
+?> 
+Standard configuration selected.
+
+Configuration finished.  The filesystem to be created has
+the following properties:
+[ 2017-10-01@20:25:50 ] Mounting Google Drive mountpoint: /cloud-encrypt
+[ 2017-10-01@20:25:55 ] Mounting decrypted Google Drive: /cloud-decrypt
+[ 2017-10-01@20:26:00 ] Mounting union: /local-union
+[ 2017-10-01@20:34:27 ] Encrypted mountpoint: /local-encrypt already mounted.
+[ 2017-10-01@20:34:27 ] Google Drive mountpoint: /cloud-encrypt already mounted.
+[ 2017-10-01@20:34:32 ] Decrypted mountpoint: /cloud-decrypt already mounted.
+[ 2017-10-01@20:34:37 ] Union mountpoint: /local-union already mounted.
+[ 2017-10-01@20:40:53 ] Mounting encrypted local Drive: /mnt/local-encrypt
+[ 2017-10-01@20:40:53 ] Mounting Google Drive mountpoint: /mnt/cloud-encrypt
+When specifying daemon mode, you must use absolute paths (beginning with '/')
+Build: encfs version 1.8.1
+
+Usage: encfs [options] rootDir mountPoint [-- [FUSE Mount Options]]
+
+Common Options:
+  -H			show optional FUSE Mount Options
+  -s			disable multithreaded operation
+  -f			run in foreground (don't spawn daemon).
+			Error messages will be sent to stderr
+			instead of syslog.
+  -v, --verbose		verbose: output encfs debug messages
+  -i, --idle=MINUTES	Auto unmount after period of inactivity
+  --anykey		Do not verify correct key is being used
+  --forcedecode		decode data even if an error is detected
+			(for filesystems using MAC block headers)
+  --public		act as a typical multi-user filesystem
+			(encfs must be run as root)
+  --reverse		reverse encryption
+  --extpass=program	Use external program for password prompt
+
+Example, to mount at ~/crypt with raw storage in ~/.crypt :
+    encfs ~/.crypt ~/crypt
+
+For more information, see the man page encfs(1)
+
+[ 2017-10-01@20:40:58 ] Mounting decrypted Google Drive: /mnt/cloud-decrypt
+[ 2017-10-01@20:41:03 ] Mounting union: /mnt/local-union

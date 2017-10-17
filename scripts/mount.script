@@ -59,7 +59,7 @@ mount_encrypt_local () {
 
 	if [ $(ps -ef | grep "encfs --reverse" | grep -v "grep" | wc -l) == "0" ]; then
 		echo "[ $(date $(printenv DATE_FORMAT)) ] Mounting encrypted local Drive: ${local_encrypt_dir}"
-		ENCFS6_config=/config/encfs6.xml encfs --reverse --extpass="echo ${ENCFS_PASSWORD}"  -o $encfs_mount_options "${local_media_dir}" "${local_encrypt_dir}" &
+		ENCFS6_config=/config/encfs6.xml encfs --reverse --extpass="echo ${ENCFS_PASSWORD}" $encfs_mount_options "${local_media_dir}" "${local_encrypt_dir}" &
 	else
 		echo "[ $(date $(printenv DATE_FORMAT)) ] Encrypted mountpoint: ${local_encrypt_dir} already mounted."
 	fi

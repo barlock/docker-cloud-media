@@ -1,0 +1,47 @@
+2017-10-01T20:40:48.307+0000 I CONTROL  [initandlisten] MongoDB starting : pid=214 port=27017 dbpath=/data/db 64-bit host=moby
+2017-10-01T20:40:48.308+0000 I CONTROL  [initandlisten] db version v3.4.9
+2017-10-01T20:40:48.308+0000 I CONTROL  [initandlisten] git version: 876ebee8c7dd0e2d992f36a848ff4dc50ee6603e
+2017-10-01T20:40:48.309+0000 I CONTROL  [initandlisten] OpenSSL version: OpenSSL 1.0.2g  1 Mar 2016
+2017-10-01T20:40:48.309+0000 I CONTROL  [initandlisten] allocator: tcmalloc
+2017-10-01T20:40:48.309+0000 I CONTROL  [initandlisten] modules: none
+2017-10-01T20:40:48.309+0000 I CONTROL  [initandlisten] build environment:
+2017-10-01T20:40:48.309+0000 I CONTROL  [initandlisten]     distmod: ubuntu1604
+2017-10-01T20:40:48.310+0000 I CONTROL  [initandlisten]     distarch: x86_64
+2017-10-01T20:40:48.310+0000 I CONTROL  [initandlisten]     target_arch: x86_64
+2017-10-01T20:40:48.310+0000 I CONTROL  [initandlisten] options: { systemLog: { destination: "file", path: "/log/mongod.log" } }
+2017-10-01T20:40:48.313+0000 I STORAGE  [initandlisten] 
+2017-10-01T20:40:48.314+0000 I STORAGE  [initandlisten] ** WARNING: Using the XFS filesystem is strongly recommended with the WiredTiger storage engine
+2017-10-01T20:40:48.314+0000 I STORAGE  [initandlisten] **          See http://dochub.mongodb.org/core/prodnotes-filesystem
+2017-10-01T20:40:48.314+0000 I STORAGE  [initandlisten] wiredtiger_open config: create,cache_size=487M,session_max=20000,eviction=(threads_min=4,threads_max=4),config_base=false,statistics=(fast),log=(enabled=true,archive=true,path=journal,compressor=snappy),file_manager=(close_idle_time=100000),checkpoint=(wait=60,log_size=2GB),statistics_log=(wait=0),
+2017-10-01T20:40:48.478+0000 I CONTROL  [initandlisten] 
+2017-10-01T20:40:48.478+0000 I CONTROL  [initandlisten] ** WARNING: Access control is not enabled for the database.
+2017-10-01T20:40:48.478+0000 I CONTROL  [initandlisten] **          Read and write access to data and configuration is unrestricted.
+2017-10-01T20:40:48.478+0000 I CONTROL  [initandlisten] 
+2017-10-01T20:40:48.539+0000 I FTDC     [initandlisten] Initializing full-time diagnostic data capture with directory '/data/db/diagnostic.data'
+2017-10-01T20:40:48.619+0000 I INDEX    [initandlisten] build index on: admin.system.version properties: { v: 2, key: { version: 1 }, name: "incompatible_with_version_32", ns: "admin.system.version" }
+2017-10-01T20:40:48.620+0000 I INDEX    [initandlisten] 	 building index using bulk method; build may temporarily use up to 500 megabytes of RAM
+2017-10-01T20:40:48.622+0000 I INDEX    [initandlisten] build index done.  scanned 0 total records. 0 secs
+2017-10-01T20:40:48.623+0000 I COMMAND  [initandlisten] setting featureCompatibilityVersion to 3.4
+2017-10-01T20:40:48.623+0000 I NETWORK  [thread1] waiting for connections on port 27017
+2017-10-01T20:40:53.355+0000 I NETWORK  [thread1] connection accepted from 127.0.0.1:56976 #1 (1 connection now open)
+2017-10-01T20:40:53.430+0000 I INDEX    [conn1] build index on: plexdrive.api_objects properties: { v: 2, key: { parents: 1 }, name: "parents_1", ns: "plexdrive.api_objects" }
+2017-10-01T20:40:53.431+0000 I INDEX    [conn1] 	 building index using bulk method; build may temporarily use up to 500 megabytes of RAM
+2017-10-01T20:40:53.434+0000 I INDEX    [conn1] build index done.  scanned 0 total records. 0 secs
+2017-10-01T20:40:53.471+0000 I INDEX    [conn1] build index on: plexdrive.api_objects properties: { v: 2, key: { name: 1 }, name: "name_1", ns: "plexdrive.api_objects" }
+2017-10-01T20:40:53.471+0000 I INDEX    [conn1] 	 building index using bulk method; build may temporarily use up to 500 megabytes of RAM
+2017-10-01T20:40:53.474+0000 I INDEX    [conn1] build index done.  scanned 0 total records. 0 secs
+2017-10-01T20:41:08.356+0000 I NETWORK  [thread1] connection accepted from 127.0.0.1:56986 #2 (2 connections now open)
+2017-10-01T20:50:19.464+0000 I CONTROL  [signalProcessingThread] got signal 15 (Terminated), will terminate after current cmd ends
+2017-10-01T20:50:19.464+0000 I NETWORK  [signalProcessingThread] shutdown: going to close listening sockets...
+2017-10-01T20:50:19.465+0000 I NETWORK  [signalProcessingThread] closing listening socket: 7
+2017-10-01T20:50:19.465+0000 I NETWORK  [signalProcessingThread] closing listening socket: 8
+2017-10-01T20:50:19.465+0000 I NETWORK  [signalProcessingThread] removing socket file: /tmp/mongodb-27017.sock
+2017-10-01T20:50:19.466+0000 I NETWORK  [signalProcessingThread] shutdown: going to flush diaglog...
+2017-10-01T20:50:19.466+0000 I FTDC     [signalProcessingThread] Shutting down full-time diagnostic data capture
+2017-10-01T20:50:19.470+0000 I STORAGE  [signalProcessingThread] WiredTigerKVEngine shutting down
+2017-10-01T20:50:19.585+0000 I -        [conn1] end connection 127.0.0.1:56976 (2 connections now open)
+2017-10-01T20:50:19.585+0000 I -        [conn2] end connection 127.0.0.1:56986 (2 connections now open)
+2017-10-01T20:50:19.599+0000 I STORAGE  [signalProcessingThread] shutdown: removing fs lock...
+2017-10-01T20:50:19.599+0000 I CONTROL  [signalProcessingThread] now exiting
+2017-10-01T20:50:19.600+0000 I CONTROL  [signalProcessingThread] shutting down with code:0
+2017-10-01T20:50:19.600+0000 I CONTROL  [initandlisten] shutting down with code:0
