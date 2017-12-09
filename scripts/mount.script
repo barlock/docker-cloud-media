@@ -95,10 +95,21 @@ mount_union () {
 if pidof -o %PPID -x "$(basename "$0")"; then
 	echo "[ $(date $(printenv DATE_FORMAT)) ] Mount already in progress. Aborting."
 else
-    mount_encrypt_local
-	mount_gdrive
-    mount_decrypt_gdrive
-	mount_union
+    if [ "$(printenv LOCAL_DRIVE)" != "0" ]; then
+        mount_encrypt_local
+    fi
+
+    if [ "$(printenv REMOTE_DRIVE)" != "0" ]; then
+        if [ "$(printenv REMOTE_PROVIDED)" == "0" ]; then
+            mount_gdrive
+        fi
+
+        mount_decrypt_gdrive
+    fi
+
+    if [ "$(printenv LOCAL_DRIVE)" != "0" ] && [ "$(printenv REMOTE_DRIVE)" != "0" ]; then
+        mount_union
+    fi
 fi
 
 exit 0

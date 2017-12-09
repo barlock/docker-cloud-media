@@ -36,6 +36,9 @@ Volumes:
 * `-v /cloud-decrypt` - Cloud files decrypted with Rclone - Append **:shared**
 
 Environment variables:
+* `-e LOCAL_DRIVE` - Turn off support for the local drive, this disables the union and encrypting it. "0" will disable local drive support (default **"1"**) 
+* `-e REMOTE_DRIVE` - Turn off support for the remote drive, this disables the union and decrypting it. "0" will disable remote drive support (default **"1"**)
+* `-e REMOTE_PROVIDED` - Use this if you mount an encrypted remote drive yourself. This isn't effective if `REMOTE_DRIVE = "0"`. You will need to mount your own remote into `/cloud-encrypt` (default **"0"**)
 * `-e CHUNK_SIZE` - Plexdrive: The size of each chunk that is downloaded (default **10M**)
 * `-e CLEAR_CHUNK_MAX_SIZE` - Plexdrive: The maximum size of the temporary chunk directory (empty as default)
 * `-e CLEAR_CHUNK_AGE` - Plexdrive: The maximum age of a cached chunk file (default **24h**) - this is ignored if `CLEAR_CHUNK_MAX_SIZE` is set
