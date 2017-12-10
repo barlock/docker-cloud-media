@@ -1,4 +1,4 @@
 #!/usr/bin/env bash
 
-docker build -t barlock/cloud-media:decrypt .
-docker push barlock/cloud-media:decrypt
+docker build -t barlock/cloud-media:latest .
+docker push barlock/cloud-media:latest
