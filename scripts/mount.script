@@ -10,25 +10,6 @@
 ###############################################################################
 # FUNCTIONS
 ###############################################################################
-mount_gdrive () {
-	# Make sure GD mountpoint exists.
-	if [ ! -d "${cloud_encrypt_dir}" ]; then
-		mkdir -p "${cloud_encrypt_dir}"
-	fi
-
-	# Make sure Plexdrive temp folder exists.
-	if [ ! -d "${plexdrive_temp_dir}" ]; then
-		mkdir -p "${plexdrive_temp_dir}"
-	fi
-
-	# Mount GD if not already mounted.
-	if [ $(ps -ef | grep "plexdrive" | grep -v "grep" | wc -l) == "0" ]; then
-		echo "[ $(date $(printenv DATE_FORMAT)) ] Mounting Google Drive mountpoint: ${cloud_encrypt_dir}"
-		plexdrive $mongo $plexdrive_options "${cloud_encrypt_dir}" &
-	else
-		echo "[ $(date $(printenv DATE_FORMAT)) ] Google Drive mountpoint: ${cloud_encrypt_dir} already mounted."
-	fi
-}
 
 mount_decrypt_gdrive () {
 	# Make sure decrypted GD directory exists.
@@ -36,13 +17,7 @@ mount_decrypt_gdrive () {
 		mkdir -p "${cloud_decrypt_dir}"
 	fi
 
-	sleep 5
-	while [ -z "$(ls -A ${cloud_encrypt_dir})" ]
-	do
-		echo "Waiting for mount ${cloud_encrypt_dir} ..."
-		sleep 30
-	done
-
+    sleep 5
 	if [ $(ps -ef | grep "encfs --extpass=" | grep -v "grep" | wc -l) == "0" ]; then
 		echo "[ $(date $(printenv DATE_FORMAT)) ] Mounting decrypted Google Drive: ${cloud_decrypt_dir}"
 		ENCFS6_CONFIG=/config/encfs6.xml encfs --extpass="echo ${ENCFS_PASSWORD}" $encfs_mount_options "${cloud_encrypt_dir}" "${cloud_decrypt_dir}" &
@@ -67,8 +42,8 @@ mount_encrypt_local () {
 
 mount_union () {
 	# Make sure combined plex media directory exists.
-	if [ ! -d "${local_union_dir}" ]; then
-		mkdir -p "${local_union_dir}"
+	if [ ! -d "${union_dir}" ]; then
+		mkdir -p "${union_dir}"
 	fi
 
 	sleep 5
@@ -83,10 +58,10 @@ mount_union () {
 	if [ $(ps -ef | grep "unionfs" | grep -v "grep" | wc -l) == "0" ]; then
 		ufs_mounts="${local_media_dir}=RW:${cloud_decrypt_dir}=RO"
 
-		echo "[ $(date $(printenv DATE_FORMAT)) ] Mounting union: ${local_union_dir}"
-		unionfs $ufs_options "${ufs_mounts}" "${local_union_dir}"
+		echo "[ $(date tai$(printenv DATE_FORMAT)) ] Mounting union: ${union_dir}"
+		unionfs $ufs_options "${ufs_mounts}" "${union_dir}"
 	else
-		echo "[ $(date $(printenv DATE_FORMAT)) ] Union mountpoint: ${local_union_dir} already mounted."
+		echo "[ $(date $(printenv DATE_FORMAT)) ] Union mountpoint: ${union_dir} already mounted."
 	fi
 }
 
@@ -95,16 +70,12 @@ mount_union () {
 if pidof -o %PPID -x "$(basename "$0")"; then
 	echo "[ $(date $(printenv DATE_FORMAT)) ] Mount already in progress. Aborting."
 else
-    if [ "$(printenv LOCAL_DRIVE)" != "0" ]; then
-        mount_encrypt_local
+    if [ "$(printenv REMOTE_DRIVE)" != "0" ]; then
+        mount_decrypt_gdrive
     fi
 
-    if [ "$(printenv REMOTE_DRIVE)" != "0" ]; then
-        if [ "$(printenv REMOTE_PROVIDED)" == "0" ]; then
-            mount_gdrive
-        fi
-
-        mount_decrypt_gdrive
+    if [ "$(printenv LOCAL_DRIVE)" != "0" ]; then
+        mount_encrypt_local
     fi
 
     if [ "$(printenv LOCAL_DRIVE)" != "0" ] && [ "$(printenv REMOTE_DRIVE)" != "0" ]; then
@@ -112,4 +83,4 @@ else
     fi
 fi
 
-exit 0
+sleep infinity

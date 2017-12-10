@@ -4,5 +4,5 @@
 # unmount fuse
 fusermount -uz "${cloud_encrypt_dir}"
 fusermount -uz "${cloud_decrypt_dir}"
-fusermount -uz "${local_union_dir}"
+fusermount -uz "${union_dir}"
 fusermount -uz "${local_encrypt_dir}"

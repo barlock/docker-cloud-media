@@ -25,8 +25,10 @@ chmod a+r /etc/fuse.conf
 chown -R abc:abc \
     /config \
     /data/db \
-    /usr/bin/* \
+    /usr/bin/*
+
+chown abc:abc \
     $cloud_encrypt_dir \
     $cloud_decrypt_dir \
-    $local_union_dir \
+    $union_dir \
     $local_decrypt_dir
