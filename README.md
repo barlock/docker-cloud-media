@@ -5,7 +5,7 @@ Default settings use ~100GB for local media, and Plexdrive chunks and cache are 
 docker create \
 	--name cloud-media \
 	-v /media:/local-media:shared \
-	-v /mnt/external/media:/local-union:shared \
+	-v /mnt/external/media:/union:shared \
 	-v /configurations:/config \
 	-v /mnt/external/plexdrive:/chunks \
 	-v /logs:/log \
