@@ -7,8 +7,8 @@ if [ $(ps -ef | grep "mongod" | grep -v "grep" | wc -l) == "0" ]; then
     all_good=0
 fi
 
-if [ $(ps -ef | grep "plexdrive" | grep -v "grep" | wc -l) == "0" ]; then
-    printf "\n\nPlexdrive is not running\n\n"
+if [ $(ps -ef | grep "google-drive-ocamlfus" | grep -v "grep" | wc -l) == "0" ]; then
+    printf "\n\ngoogle-drive-ocamlfus is not running\n\n"
     all_good=0
 fi
 

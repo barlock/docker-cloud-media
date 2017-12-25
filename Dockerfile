@@ -1,7 +1,7 @@
 ####################
 # BASE IMAGE
 ####################
-FROM ubuntu:16.04
+FROM ubuntu:18.04
 
 MAINTAINER barlockm@gmail.com <barlockm@gmail.com>
 
@@ -13,28 +13,18 @@ RUN apt-get update && apt-get install -y \
     fuse \
     unionfs-fuse \
     encfs \
-    wget
+    wget \
+    software-properties-common
 
-RUN apt-get update && apt-get install -y ca-certificates && update-ca-certificates && apt-get install -y openssl
+RUN apt-get install -y ca-certificates && update-ca-certificates && apt-get install -y openssl
 RUN sed -i 's/#user_allow_other/user_allow_other/' /etc/fuse.conf
 
-# MongoDB 3.4
-RUN \
-   apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 0C49F3730359A14518585931BC711F9BA15703C6 && \
-   echo "deb [ arch=amd64,arm64 ] http://repo.mongodb.org/apt/ubuntu xenial/mongodb-org/3.4 multiverse" | tee /etc/apt/sources.list.d/mongodb-org-3.4.list && \
-   apt-get update && \
-   apt-get install -y mongodb-org
-
-# Plexdrive 4
-
-ENV PLEXDRIVE_BIN="plexdrive-linux-amd64"
-ENV PLEXDRIVE_URL="https://github.com/dweidenfeld/plexdrive/releases/download/4.0.0/${PLEXDRIVE_BIN}"
+# google-drive-ocamlfuse
 
 RUN \
-    wget "$PLEXDRIVE_URL" && \
-    chmod a+x "$PLEXDRIVE_BIN" && \
-    cp -rf "$PLEXDRIVE_BIN" "/usr/bin/plexdrive" && \
-    rm -rf "$PLEXDRIVE_BIN"
+    add-apt-repository ppa:alessandro-strada/google-drive-ocamlfuse-beta && \
+    apt-get update && \
+    apt-get install -y google-drive-ocamlfuse
 
 # S6 overlay
 ENV S6_BEHAVIOUR_IF_STAGE2_FAILS=2
@@ -53,13 +43,6 @@ RUN \
 ####################
 # ENVIRONMENT VARIABLES
 ####################
-
-# Plexdrive
-ENV CHUNK_SIZE "10M"
-ENV CLEAR_CHUNK_MAX_SIZE ""
-ENV CLEAR_CHUNK_AGE "24h"
-ENV LOG_LEVEL "3"
-ENV MONGO_DATABASE "plexdrive"
 
 # Drive Config
 ENV LOCAL_DRIVE "1"

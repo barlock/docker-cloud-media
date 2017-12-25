@@ -16,15 +16,11 @@ mount_gdrive () {
 		mkdir -p "${cloud_encrypt_dir}"
 	fi
 
-	# Make sure Plexdrive temp folder exists.
-	if [ ! -d "${plexdrive_temp_dir}" ]; then
-		mkdir -p "${plexdrive_temp_dir}"
-	fi
 
 	# Mount GD if not already mounted.
-	if [ $(ps -ef | grep "plexdrive" | grep -v "grep" | wc -l) == "0" ]; then
+	if [ $(ps -ef | grep "google-drive-ocamlfuse" | grep -v "grep" | wc -l) == "0" ]; then
 		echo "[ $(date $(printenv DATE_FORMAT)) ] Mounting Google Drive mountpoint: ${cloud_encrypt_dir}"
-		plexdrive $mongo $plexdrive_options "${cloud_encrypt_dir}" &
+		google-drive-ocamlfuse "${cloud_encrypt_dir}" -o allow_other,ro,atomic_o_trunc,large_read,default_permissions
 	else
 		echo "[ $(date $(printenv DATE_FORMAT)) ] Google Drive mountpoint: ${cloud_encrypt_dir} already mounted."
 	fi
@@ -112,4 +108,4 @@ else
     fi
 fi
 
-exit 0
+sleep infinity
