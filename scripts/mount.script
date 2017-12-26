@@ -16,15 +16,10 @@ mount_gdrive () {
 		mkdir -p "${cloud_encrypt_dir}"
 	fi
 
-	# Make sure Plexdrive temp folder exists.
-	if [ ! -d "${plexdrive_temp_dir}" ]; then
-		mkdir -p "${plexdrive_temp_dir}"
-	fi
-
 	# Mount GD if not already mounted.
 	if [ $(ps -ef | grep "plexdrive" | grep -v "grep" | wc -l) == "0" ]; then
 		echo "[ $(date $(printenv DATE_FORMAT)) ] Mounting Google Drive mountpoint: ${cloud_encrypt_dir}"
-		plexdrive $mongo $plexdrive_options "${cloud_encrypt_dir}" &
+		rclone mount $rclone_mount_options "$(printenv RCLONE_CLOUD_ENDPOINT)" "${cloud_encrypt_dir}" &
 	else
 		echo "[ $(date $(printenv DATE_FORMAT)) ] Google Drive mountpoint: ${cloud_encrypt_dir} already mounted."
 	fi

@@ -13,28 +13,21 @@ RUN apt-get update && apt-get install -y \
     fuse \
     unionfs-fuse \
     encfs \
-    wget
+    wget \
+    unzip
 
 RUN apt-get update && apt-get install -y ca-certificates && update-ca-certificates && apt-get install -y openssl
 RUN sed -i 's/#user_allow_other/user_allow_other/' /etc/fuse.conf
 
-# MongoDB 3.4
-RUN \
-   apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 0C49F3730359A14518585931BC711F9BA15703C6 && \
-   echo "deb [ arch=amd64,arm64 ] http://repo.mongodb.org/apt/ubuntu xenial/mongodb-org/3.4 multiverse" | tee /etc/apt/sources.list.d/mongodb-org-3.4.list && \
-   apt-get update && \
-   apt-get install -y mongodb-org
+# Rclone
+ENV RCLONE_VERSION="current"
+ENV PLATFORM_ARCH="amd64"
 
-# Plexdrive 4
+RUN cd tmp && \
+  wget -q http://downloads.rclone.org/rclone-${RCLONE_VERSION}-linux-${PLATFORM_ARCH}.zip && \
+  unzip /tmp/rclone-${RCLONE_VERSION}-linux-${PLATFORM_ARCH}.zip && \
+  mv /tmp/rclone-*-linux-${PLATFORM_ARCH}/rclone /usr/bin
 
-ENV PLEXDRIVE_BIN="plexdrive-linux-amd64"
-ENV PLEXDRIVE_URL="https://github.com/dweidenfeld/plexdrive/releases/download/4.0.0/${PLEXDRIVE_BIN}"
-
-RUN \
-    wget "$PLEXDRIVE_URL" && \
-    chmod a+x "$PLEXDRIVE_BIN" && \
-    cp -rf "$PLEXDRIVE_BIN" "/usr/bin/plexdrive" && \
-    rm -rf "$PLEXDRIVE_BIN"
 
 # S6 overlay
 ENV S6_BEHAVIOUR_IF_STAGE2_FAILS=2
@@ -54,12 +47,13 @@ RUN \
 # ENVIRONMENT VARIABLES
 ####################
 
-# Plexdrive
-ENV CHUNK_SIZE "10M"
-ENV CLEAR_CHUNK_MAX_SIZE ""
-ENV CLEAR_CHUNK_AGE "24h"
-ENV LOG_LEVEL "3"
-ENV MONGO_DATABASE "plexdrive"
+# Rclone
+ENV BUFFER_SIZE "500M"
+ENV MAX_READ_AHEAD "30G"
+ENV CHECKERS "16"
+ENV TPS_LIMIT "10"
+ENV RCLONE_CLOUD_ENDPOINT "gdrive:"
+ENV CACHE_MODE "minimal"
 
 # Drive Config
 ENV LOCAL_DRIVE "1"
