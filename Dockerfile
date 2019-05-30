@@ -20,9 +20,7 @@ RUN apt-get install -y ca-certificates && update-ca-certificates && apt-get inst
 RUN sed -i 's/#user_allow_other/user_allow_other/' /etc/fuse.conf
 
 # google-drive-ocamlfuse
-
-RUN \
-    add-apt-repository ppa:alessandro-strada/google-drive-ocamlfuse-beta && \
+RUN add-apt-repository ppa:alessandro-strada/ppa && \
     apt-get update && \
     apt-get install -y google-drive-ocamlfuse
 
@@ -72,9 +70,9 @@ RUN groupmod -g 1000 users && \
 # VOLUMES
 ####################
 # Define mountable directories.
-VOLUME /data/db /config /cloud-encrypt /cloud-decrypt /union /local-media /local-encrypt /chunks /log
+VOLUME /config /cloud-encrypt /cloud-decrypt /union /local-media /local-encrypt /log
 
-RUN chmod -R 777 /data
+RUN chmod -R 777 /config
 RUN chmod -R 777 /log
 
 ####################

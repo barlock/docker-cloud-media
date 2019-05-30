@@ -16,11 +16,10 @@ mount_gdrive () {
 		mkdir -p "${cloud_encrypt_dir}"
 	fi
 
-
 	# Mount GD if not already mounted.
 	if [ $(ps -ef | grep "google-drive-ocamlfuse" | grep -v "grep" | wc -l) == "0" ]; then
 		echo "[ $(date $(printenv DATE_FORMAT)) ] Mounting Google Drive mountpoint: ${cloud_encrypt_dir}"
-		google-drive-ocamlfuse "${cloud_encrypt_dir}" -o allow_other,ro,atomic_o_trunc,large_read,default_permissions
+		google-drive-ocamlfuse "${cloud_encrypt_dir}" -o allow_other,ro,atomic_o_trunc,default_permissions
 	else
 		echo "[ $(date $(printenv DATE_FORMAT)) ] Google Drive mountpoint: ${cloud_encrypt_dir} already mounted."
 	fi
@@ -73,7 +72,6 @@ mount_union () {
 		echo "Waiting for mount ${cloud_decrypt_dir} ..."
 		sleep 30
 	done
-
 
 	# Mount plex media directory if not already mounted.
 	if [ $(ps -ef | grep "unionfs" | grep -v "grep" | wc -l) == "0" ]; then

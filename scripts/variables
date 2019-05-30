@@ -12,7 +12,7 @@ local_union_dir="/union"
 
 encfs_mount_options="-o allow_other,nonempty"
 
-ufs_options="-o uid=${_puid:-911} -o gid=${_pgid:-911} -o cow,allow_other,direct_io,atomic_o_trunc,large_read,default_permissions"
+ufs_options="-o uid=${_puid:-911} -o gid=${_pgid:-911} -o cow,allow_other,direct_io,atomic_o_trunc,default_permissions"
 
 log_dir="/log"
 if [ ! -d "${log_dir}" ]; then
