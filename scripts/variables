@@ -12,10 +12,6 @@ local_union_dir="/union"
 
 encfs_mount_options="-o allow_other,nonempty"
 
-rclone_config="--config=/config/.rclone.conf"
-rclone_options="${rclone_config} -vv --buffer-size $(printenv BUFFER_SIZE) --checkers $(printenv CHECKERS) --tpslimit $(printenv TPS_LIMIT) --vfs-cache-mode $(printenv CACHE_MODE)"
-rclone_mount_options="${rclone_options} --allow-non-empty --allow-other --max-read-ahead $(printenv MAX_READ_AHEAD) --uid ${_puid:-911} --gid ${_pgid:-911}"
-
 ufs_options="-o uid=${_puid:-911} -o gid=${_pgid:-911} -o cow,allow_other,direct_io,nonempty,auto_cache,sync_read"
 
 log_dir="/log"

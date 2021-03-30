@@ -20,13 +20,14 @@ RUN apt-get update && apt-get install -y ca-certificates && update-ca-certificat
 RUN sed -i 's/#user_allow_other/user_allow_other/' /etc/fuse.conf
 
 # Rclone
-ENV RCLONE_VERSION="current"
+ENV INSTALL_RCLONE_VERSION="1.54.1"
 ENV PLATFORM_ARCH="amd64"
-
-RUN cd tmp && \
-  wget -q http://downloads.rclone.org/rclone-${RCLONE_VERSION}-linux-${PLATFORM_ARCH}.zip && \
-  unzip /tmp/rclone-${RCLONE_VERSION}-linux-${PLATFORM_ARCH}.zip && \
-  mv /tmp/rclone-*-linux-${PLATFORM_ARCH}/rclone /usr/bin
+RUN true \
+  && cd tmp \
+  && wget -q https://downloads.rclone.org/v${INSTALL_RCLONE_VERSION}/rclone-v${INSTALL_RCLONE_VERSION}-linux-amd64.zip \
+  && unzip /tmp/rclone-v${INSTALL_RCLONE_VERSION}-linux-${PLATFORM_ARCH}.zip \
+  && mv /tmp/rclone-*-linux-${PLATFORM_ARCH}/rclone /usr/bin \
+  && true
 
 
 # S6 overlay
@@ -48,12 +49,7 @@ RUN \
 ####################
 
 # Rclone
-ENV BUFFER_SIZE "500M"
-ENV MAX_READ_AHEAD "30G"
-ENV CHECKERS "16"
-ENV TPS_LIMIT "10"
-ENV RCLONE_CLOUD_ENDPOINT "gdrive:"
-ENV CACHE_MODE "minimal"
+ENV CLOUD_ENDPOINT "gdrive:"
 
 # Drive Config
 ENV LOCAL_DRIVE "1"
@@ -67,9 +63,7 @@ ENV DATE_FORMAT "+%F@%T"
 # SCRIPTS
 ####################
 COPY setup/* /usr/bin/
-
 COPY scripts/* /usr/bin/
-
 RUN chmod a+x /usr/bin/*
 
 COPY root /
@@ -85,8 +79,8 @@ RUN groupmod -g 1000 users && \
 # Define mountable directories.
 VOLUME /data/db /config /cloud-encrypt /cloud-decrypt /union /local-media /local-encrypt /chunks /log
 
-RUN chmod -R 777 /data
-RUN chmod -R 777 /log
+RUN mkdir -p /data && chmod -R 777 /data
+RUN mkdir -p /log && chmod -R 777 /log
 
 ####################
 # WORKING DIRECTORY
